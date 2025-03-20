@@ -1,7 +1,7 @@
-package core
+package Core
 
 import (
-	"github.com/GreekMilkBot/core/share"
+	"github.com/GreekMilkBot/Core/share"
 )
 
 type Plugin interface {

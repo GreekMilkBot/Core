@@ -1,6 +1,6 @@
 package adapter
 
-import "github.com/GreekMilkBot/core/share"
+import "github.com/GreekMilkBot/Core/share"
 
 type Message struct {
 	// Adapter Name
