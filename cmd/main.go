@@ -1,6 +1,5 @@
 package cmd
 
 func Main() {
-	//todo
-	
+	// todo
 }

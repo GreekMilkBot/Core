@@ -6,8 +6,7 @@ func init() {
 	Core.RegisterModule(OneBot{})
 }
 
-type OneBot struct {
-}
+type OneBot struct{}
 
 func (o OneBot) BotModule() Core.ModuleInfo {
 	return Core.ModuleInfo{

@@ -9,8 +9,8 @@ type Plugin interface {
 }
 
 type PluginActions interface {
-	OnStart(ctx share.Context) error
-	OnDestroy(ctx share.Context) error
+	Start() error
+	Stop() error
 }
 
 type AdapterActions interface{}
