@@ -1,7 +1,18 @@
 package Core
 
-import core "github.com/GreekMilkBot/Core/shared"
+import "fmt"
 
-func RegisterModule(plugin core.Plugin) {
+func RegisterModule(instance Module) {
+	module := instance.BotModule()
+	fmt.Printf("RegisterModule %s\n", module.ID)
 	//todo
+}
+
+type Module interface {
+	BotModule() ModuleInfo
+}
+
+type ModuleInfo struct {
+	ID  string
+	New func() Module
 }
