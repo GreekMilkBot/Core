@@ -1,17 +1,10 @@
-logs:
+system.logs:
   filter:
     adapter.*: debug
     "*": DEBUG
-
-plugins:
   # 单实例
-  adapter.onebot:
-    server: ws://a.b.c.d
-    auth: xxx.xxx.xx.xx
-  # 多实例
-  adapter.onebot:aabbccdd:
-    server: ws://a.b.c.d
-    auth: xxx.xxx.xx.xx
-
+adapter.onebot:
+  server: ws://a.b.c.d
+  auth: xxx.xxx.xx.xx
 
 

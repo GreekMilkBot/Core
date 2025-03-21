@@ -12,8 +12,9 @@ type Module interface {
 }
 
 type ModuleInfo struct {
-	ID  string
-	New func() Module
+	ID    string // 插件 ID
+	Multi bool   // 是否支持多实例
+	New   func() Module
 }
 
 func RegisterModule(instance Module) {
@@ -38,53 +39,15 @@ func RegisterModule(instance Module) {
 	modules[mod.ID] = mod
 }
 
-func GetModules(scope string) []ModuleInfo {
-	modulesMu.RLock()
-	defer modulesMu.RUnlock()
-
-	scopeParts := strings.Split(scope, ".")
-
-	// handle the special case of an empty scope, which
-	// should match only the top-level modules
-	if scope == "" {
-		scopeParts = []string{}
-	}
-
-	var mods []ModuleInfo
-iterateModules:
-	for id, m := range modules {
-		modParts := strings.Split(id, ".")
-
-		// match only the next level of nesting
-		if len(modParts) != len(scopeParts)+1 {
-			continue
-		}
-
-		// specified parts must be exact matches
-		for i := range scopeParts {
-			if modParts[i] != scopeParts[i] {
-				continue iterateModules
-			}
-		}
-
-		mods = append(mods, m)
-	}
-
-	// make return value deterministic
-	sort.Slice(mods, func(i, j int) bool {
-		return mods[i].ID < mods[j].ID
-	})
-
-	return mods
-}
-
-func Modules() []string {
+func Modules(prefix string) []string {
 	modulesMu.RLock()
 	defer modulesMu.RUnlock()
 
 	names := make([]string, 0, len(modules))
 	for name := range modules {
-		names = append(names, name)
+		if strings.HasPrefix(name, prefix) {
+			names = append(names, name)
+		}
 	}
 
 	sort.Strings(names)

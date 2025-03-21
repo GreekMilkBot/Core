@@ -5,7 +5,7 @@
 ### 插件加载顺序
 
 ```text
-system.* -> admin.* -> adapter.* -> handler.*
+system.* -> adapter.* -> *
 ```
 
 ## 消息流向
@@ -19,5 +19,7 @@ adapter[async] -> queue -> filter -> handler(loop)
 ### 发送消息流向
 
 ```text
-any -> queue(1)  -> filter ->queue(2) -> route  ->adapter
+any -> queue(1)  -> filter -> queue(2) -> route  ->adapter
 ```
+
+## 
