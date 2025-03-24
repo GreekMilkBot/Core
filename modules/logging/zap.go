@@ -4,6 +4,10 @@ import (
 	"github.com/GreekMilkBot/Core"
 )
 
+func init() {
+	Core.RegisterModule(ZapLogger{})
+}
+
 type ZapLogger struct {
 }
 
