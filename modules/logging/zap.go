@@ -23,7 +23,7 @@ func (z ZapLogger) BotModule() Core.ModuleInfo {
 func (z ZapLogger) Priority() int {
 	return 200
 }
-func (z ZapLogger) Processor(context *Core.Context, mods *[]Core.BotInstance) error {
+func (z ZapLogger) Processor(context *Core.Context, mods *[]*Core.BotInstance) error {
 	return nil
 }
 

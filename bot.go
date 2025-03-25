@@ -10,7 +10,7 @@ import (
 
 type Bot struct {
 	locker    *sync.RWMutex
-	instances []BotInstance
+	instances []*BotInstance
 	ctx       Context
 }
 
@@ -52,7 +52,7 @@ func (b *BotInstance) init(ctx Context) error {
 func NewBot(ctx context.Context) *Bot {
 	r := &Bot{
 		locker:    new(sync.RWMutex),
-		instances: make([]BotInstance, 0),
+		instances: make([]*BotInstance, 0),
 		ctx:       NewContext(ctx),
 	}
 	for _, s := range Modules("system.") {
@@ -74,7 +74,7 @@ func (b *Bot) Add(name string, cfg map[string]any) error {
 		return err
 	}
 
-	mod := BotInstance{
+	mod := &BotInstance{
 		ModuleInfo: module,
 		Mod:        module.New(),
 	}
@@ -102,7 +102,7 @@ func (b *Bot) Update(name string, cfg map[string]any, index int) error {
 	for _, i := range b.instances {
 		if i.ID == name {
 			if index == 0 {
-				mod = &i
+				mod = i
 				break
 			}
 			index--
@@ -125,7 +125,7 @@ func (b *Bot) afterHook() error {
 		mod := instance.Mod
 		if item, ok := mod.(BotProcessor); ok && item != nil {
 			hooks = append(hooks, hookItem{
-				BotInstance:  &instance,
+				BotInstance:  instance,
 				BotProcessor: item,
 			})
 		}
@@ -154,7 +154,7 @@ func (b *Bot) afterHook() error {
 }
 
 type BotProcessor interface {
-	Processor(context *Context, mods *[]BotInstance) error
+	Processor(context *Context, mods *[]*BotInstance) error
 }
 
 func (b *Bot) Start() {}

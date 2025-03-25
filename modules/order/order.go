@@ -27,8 +27,9 @@ func nameId(key string) (int, string) {
 	return 10, key
 }
 
-func (o Order) Processor(_ *Core.Context, mods *[]Core.BotInstance) error {
-	slices.SortFunc(*mods, func(a, b Core.BotInstance) int {
+func (o Order) Processor(_ *Core.Context, mods *[]*Core.BotInstance) error {
+
+	slices.SortFunc(*mods, func(a, b *Core.BotInstance) int {
 		idA, bodyA := nameId(a.ID)
 		idB, bodyB := nameId(b.ID)
 		if idA != idB {
