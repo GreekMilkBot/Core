@@ -12,9 +12,8 @@ type Module interface {
 }
 
 type ModuleInfo struct {
-	ID    string // 插件 ID
-	Multi bool   // 是否支持多实例
-	New   func() Module
+	ID  string // 插件 ID
+	New func() Module
 }
 
 func RegisterModule(instance Module) {
@@ -76,6 +75,10 @@ type Validator interface {
 
 type CleanerUpper interface {
 	Cleanup() error
+}
+
+type Priority interface {
+	Priority() int
 }
 
 var (

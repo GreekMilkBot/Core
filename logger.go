@@ -16,7 +16,9 @@ type Logger interface {
 	Errorf(format string, args ...any)
 }
 
-type noopLoggerFactory struct{}
+type noopLoggerFactory struct {
+	Group string
+}
 
 func (*noopLoggerFactory) Logger(_ context.Context) Logger {
 	return noopLogger{}

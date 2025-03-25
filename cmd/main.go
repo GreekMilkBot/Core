@@ -1,5 +1,11 @@
 package cmd
 
+import (
+	"context"
+	"github.com/GreekMilkBot/Core"
+)
+
 func Main() {
-	// todo
+	bot := Core.NewBot(context.Background())
+	bot.Start()
 }

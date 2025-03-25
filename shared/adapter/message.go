@@ -1,6 +1,8 @@
 package adapter
 
-import "github.com/GreekMilkBot/Core/modules/core/share"
+import (
+	"github.com/GreekMilkBot/Core/shared/common"
+)
 
 type Message struct {
 	// Adapter Name
@@ -8,8 +10,8 @@ type Message struct {
 	BotID    string
 	UserID   string
 
-	Content share.Content // must
-	Quote   *Message      // optional
+	Content common.Content // must
+	Quote   *Message       // optional
 }
 
 type GroupMessage struct {
