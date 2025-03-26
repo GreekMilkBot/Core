@@ -1,8 +1,9 @@
 package Core
 
 import (
-	"code.d7z.net/d7z-team/go-variables"
 	"context"
+
+	"code.d7z.net/d7z-team/go-variables"
 )
 
 type Context struct {
@@ -35,8 +36,9 @@ func NewContext(ctx context.Context) Context {
 }
 
 func (ctx Context) WithValue(key, value any) Context {
+	nextCtx := context.WithValue(ctx.Context, key, value)
 	return Context{
-		Context: context.WithValue(ctx.Context, key, value),
-		Logger:  ctx.Value("logger").(LoggerFactory).Logger(ctx.Context),
+		Context: ctx,
+		Logger:  ctx.Value("logger").(LoggerFactory).Logger(nextCtx),
 	}
 }

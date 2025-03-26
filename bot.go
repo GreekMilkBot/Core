@@ -1,11 +1,14 @@
 package Core
 
 import (
-	"code.d7z.net/d7z-team/go-variables"
 	"context"
-	"github.com/pkg/errors"
 	"slices"
 	"sync"
+
+	"code.d7z.net/d7z-team/go-variables"
+
+	"github.com/pkg/errors"
+	"github.com/r3labs/diff/v3"
 )
 
 type Bot struct {
@@ -23,16 +26,26 @@ type BotInstance struct {
 }
 
 func (b *BotInstance) ctx(ctx Context) Context {
-	ctx = ctx.WithValue("name", b.ID)
+	ctx = ctx.WithValue("module-name", b.ID)
 	ctx.Config = b.Config
 	return ctx
 }
 
-func (b *BotInstance) init(ctx Context) error {
+func (b *BotInstance) init(ctx Context, cfg map[string]any) error {
 	if b.Booted {
+		if item, ok := b.Mod.(ConfigReloader); ok {
+			changelog, err := diff.Diff(b.Config, cfg)
+			if err != nil {
+				return err
+			}
+			if len(changelog) != 0 {
+				if err := item.Reload(); err != nil {
+					return err
+				}
+			}
+		}
 		return nil
 	}
-	b.Booted = true
 	if item, ok := b.Mod.(Provisioner); ok {
 		if err := item.Provision(b.ctx(ctx)); err != nil {
 			return err
@@ -43,9 +56,11 @@ func (b *BotInstance) init(ctx Context) error {
 			return err
 		}
 	}
+
 	if item, ok := b.Mod.(CleanerUpper); ok {
 		b.closer = append(b.closer, item.Cleanup)
 	}
+	b.Booted = true
 	return nil
 }
 
@@ -89,7 +104,7 @@ func (b *Bot) Add(name string, cfg map[string]any) error {
 		})
 	}
 	mod.Config = cfg
-	return b.afterHook()
+	return b.afterHook(nil)
 }
 
 func (b *Bot) Update(name string, cfg map[string]any, index int) error {
@@ -111,11 +126,10 @@ func (b *Bot) Update(name string, cfg map[string]any, index int) error {
 	if mod == nil {
 		return errors.New("module not found")
 	}
-	mod.Config = cfg
-	return b.afterHook()
+	return b.afterHook(cfg)
 }
 
-func (b *Bot) afterHook() error {
+func (b *Bot) afterHook(cfg map[string]any) error {
 	type hookItem struct {
 		*BotInstance
 		BotProcessor
@@ -142,7 +156,7 @@ func (b *Bot) afterHook() error {
 		return a - b
 	})
 	for _, hook := range hooks {
-		if err := hook.init(b.ctx); err != nil {
+		if err := hook.init(b.ctx, cfg); err != nil {
 			return err
 		}
 		if err := hook.Processor(&b.ctx, &b.instances); err != nil {
@@ -150,7 +164,6 @@ func (b *Bot) afterHook() error {
 		}
 	}
 	return nil
-
 }
 
 type BotProcessor interface {

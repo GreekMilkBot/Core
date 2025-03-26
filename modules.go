@@ -77,6 +77,10 @@ type CleanerUpper interface {
 	Cleanup() error
 }
 
+type ConfigReloader interface {
+	Reload() error
+}
+
 type Priority interface {
 	Priority() int
 }

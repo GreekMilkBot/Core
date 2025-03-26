@@ -8,8 +8,7 @@ func init() {
 	Core.RegisterModule(Adapter{})
 }
 
-type Adapter struct {
-}
+type Adapter struct{}
 
 func (a Adapter) BotModule() Core.ModuleInfo {
 	return Core.ModuleInfo{

@@ -20,21 +20,29 @@ type noopLoggerFactory struct {
 	Group string
 }
 
-func (*noopLoggerFactory) Logger(_ context.Context) Logger {
-	return noopLogger{}
+func (*noopLoggerFactory) Logger(ctx context.Context) Logger {
+	if group, ok := ctx.Value("module-name").(string); ok {
+		return noopLogger{group}
+	}
+	return noopLogger{"root"}
 }
 
-type noopLogger struct{}
+type noopLogger struct {
+	group string
+}
 
-func (noopLogger) Debugf(format string, args ...any) {
-	log.Printf(" [DEBUG] "+format, args...)
+func (n noopLogger) Debugf(format string, args ...any) {
+	log.Printf(" [DEBUG] ["+n.group+"] "+format, args...)
 }
-func (noopLogger) Infof(format string, args ...any) {
-	log.Printf(" [INFO ] "+format, args...)
+
+func (n noopLogger) Infof(format string, args ...any) {
+	log.Printf(" [INFO ] ["+n.group+"] "+format, args...)
 }
-func (noopLogger) Warnf(format string, args ...any) {
-	log.Printf(" [WARN ] "+format, args...)
+
+func (n noopLogger) Warnf(format string, args ...any) {
+	log.Printf(" [WARN ] ["+n.group+"] "+format, args...)
 }
-func (noopLogger) Errorf(format string, args ...any) {
-	log.Printf(" [ERROR ] "+format, args...)
+
+func (n noopLogger) Errorf(format string, args ...any) {
+	log.Printf(" [ERROR ] ["+n.group+"] "+format, args...)
 }

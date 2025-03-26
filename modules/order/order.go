@@ -1,17 +1,17 @@
 package order
 
 import (
-	"github.com/GreekMilkBot/Core"
 	"slices"
 	"strings"
+
+	"github.com/GreekMilkBot/Core"
 )
 
 func init() {
 	Core.RegisterModule(Order{})
 }
 
-type Order struct {
-}
+type Order struct{}
 
 func nameId(key string) (int, string) {
 	if before, after, found := strings.Cut(key, "."); found {
@@ -28,7 +28,6 @@ func nameId(key string) (int, string) {
 }
 
 func (o Order) Processor(_ *Core.Context, mods *[]*Core.BotInstance) error {
-
 	slices.SortFunc(*mods, func(a, b *Core.BotInstance) int {
 		idA, bodyA := nameId(a.ID)
 		idB, bodyB := nameId(b.ID)
